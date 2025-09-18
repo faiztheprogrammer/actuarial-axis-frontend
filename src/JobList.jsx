@@ -1,4 +1,5 @@
 import JobCard from "./JobCard.jsx";
+import JobSkeleton from "./JobSkeleton.jsx";
 
 function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit, loading }) {
   const removeFilter = (filterKey, valueToRemove = null) => {
@@ -11,10 +12,12 @@ function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit, loading }) {
       setFilters((prev) => ({ ...prev, [filterKey]: "All" }));
     }
   };
+
   const activeFiltersExist =
     (filters.location && filters.location !== "All") ||
     (filters.job_type && filters.job_type !== "All") ||
     (filters.tags && filters.tags.length > 0);
+
   return (
     <div>
       {activeFiltersExist && (
@@ -43,18 +46,21 @@ function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit, loading }) {
           ))}
         </div>
       )}
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Job Listings</h1>
         <span className="text-sm text-gray-500 font-medium">
           Showing {jobs.length} results
         </span>
       </div>
+
       <div className="space-y-4">
         {loading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
-            <span className="ml-3 text-blue-600 font-medium">Loading jobs...</span>
-          </div>
+          <>
+            {[...Array(5)].map((_, idx) => (
+              <JobSkeleton key={idx} />
+            ))}
+          </>
         ) : jobs.length > 0 ? (
           jobs.map((job) => (
             <JobCard
@@ -75,7 +81,6 @@ function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit, loading }) {
           </div>
         )}
       </div>
-
     </div>
   );
 }

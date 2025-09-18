@@ -36,12 +36,13 @@ function App() {
       if (filters.tags && filters.tags.length > 0)
         params.append("tags", filters.tags.join(","));
       if (filters.sort) params.append("sort", filters.sort);
+
       const response = await apiClient.get("/jobs", { params });
       setJobs(response.data);
     } catch (err) {
       console.error("Failed to fetch jobs.", err);
     } finally {
-      setLoading(false); // stop loading whether success or error
+      setLoading(false); // stop loading
     }
   };
 
@@ -49,18 +50,21 @@ function App() {
     try {
       const response = await apiClient.get("/jobs");
       const allJobs = response.data;
+
       setAvailableLocations([
         ...new Set(allJobs.map((j) => j.location).filter(Boolean)),
       ]);
       setAvailableJobTypes([
         ...new Set(allJobs.map((j) => j.job_type).filter(Boolean)),
       ]);
+
       const allTags = new Set();
       allJobs.forEach((j) => {
-        if (j.tags)
+        if (j.tags) {
           j.tags.split(",").forEach((tag) => {
             if (tag.trim()) allTags.add(tag.trim());
           });
+        }
       });
       setAvailableTags([...allTags].sort());
     } catch (error) {
