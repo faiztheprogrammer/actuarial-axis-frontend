@@ -1,6 +1,6 @@
 import JobCard from "./JobCard.jsx";
 
-function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit }) {
+function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit, loading }) {
   const removeFilter = (filterKey, valueToRemove = null) => {
     if (filterKey === "tags" && valueToRemove) {
       setFilters((prev) => ({
@@ -50,7 +50,12 @@ function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit }) {
         </span>
       </div>
       <div className="space-y-4">
-        {jobs.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500"></div>
+            <span className="ml-3 text-blue-600 font-medium">Loading jobs...</span>
+          </div>
+        ) : jobs.length > 0 ? (
           jobs.map((job) => (
             <JobCard
               key={job.id}
@@ -70,6 +75,7 @@ function JobList({ jobs, filters, setFilters, onJobDeleted, onEdit }) {
           </div>
         )}
       </div>
+
     </div>
   );
 }

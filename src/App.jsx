@@ -8,6 +8,7 @@ import JobAddModal from "./JobAddModal.jsx";
 import apiClient from "./api.jsx";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [filters, setFilters] = useState({
     keyword: "",
@@ -24,6 +25,7 @@ function App() {
   const isInitialMount = useRef(true);
 
   const fetchJobs = async () => {
+    setLoading(true); // start loading
     try {
       const params = new URLSearchParams();
       if (filters.keyword) params.append("keyword", filters.keyword);
@@ -38,6 +40,8 @@ function App() {
       setJobs(response.data);
     } catch (err) {
       console.error("Failed to fetch jobs.", err);
+    } finally {
+      setLoading(false); // stop loading whether success or error
     }
   };
 
@@ -123,6 +127,7 @@ function App() {
               setFilters={setFilters}
               onJobDeleted={handleDeleteJob}
               onEdit={setEditingJob}
+              loading={loading}
             />
           </section>
         </div>
